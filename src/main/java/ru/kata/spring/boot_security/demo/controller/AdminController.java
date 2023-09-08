@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
@@ -19,11 +19,11 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 public class AdminController {
 
     private final UserService userService;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
 
-    public AdminController(UserService userService, RoleRepository roleRepository) {
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -35,7 +35,7 @@ public class AdminController {
     @GetMapping("/registration")
     public String registration(ModelMap model) {
         model.addAttribute("userForm", new User());
-        model.addAttribute("roles", roleRepository.findAll());
+        model.addAttribute("roles", roleService.findAll());
         return "registration";
     }
 
@@ -50,18 +50,21 @@ public class AdminController {
     @GetMapping("/{id}")
     public String showOneUser(@PathVariable Long id, Model model) {
         model.addAttribute("user", userService.getUserById(id));
-        return "userPage";
+        return "userPageForAdmin";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable Long id) {
         model.addAttribute("user", userService.getUserById(id));
+        model.addAttribute("roles", roleService.findAll());
         return "edit";
     }
 
     @PatchMapping("/{id}")
     public String edit(@ModelAttribute User user) {
-        userService.updateUser(user);
+        if (!userService.saveUser(user)) {
+            return "userExistsError";
+        }
         return "redirect:/admin";
     }
 
