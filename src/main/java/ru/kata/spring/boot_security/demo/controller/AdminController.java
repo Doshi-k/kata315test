@@ -1,9 +1,13 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,43 +31,34 @@ public class AdminController {
     }
 
     @GetMapping
-    public String userList(Model model) {
+    public String adminPage(ModelMap model, @AuthenticationPrincipal User principal) {
         model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("new_user", new User());
+        model.addAttribute("user", principal);
         return "admin";
     }
 
-    @GetMapping("/registration")
-    public String registration(ModelMap model) {
-        model.addAttribute("userForm", new User());
-        model.addAttribute("roles", roleService.findAll());
-        return "registration";
-    }
-
     @PostMapping("/registration")
-    public String addUser(@ModelAttribute User userForm) {
-        if (!userService.saveUser(userForm)) {
-            return "userExistsError";
-        }
+    public String addUser(@ModelAttribute User user) {
+        userService.saveUser(user);
         return "redirect:/admin";
     }
 
-    @GetMapping("/{id}")
-    public String showOneUser(@PathVariable Long id, Model model) {
-        model.addAttribute("user", userService.getUserById(id));
-        return "userPageForAdmin";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable Long id) {
-        model.addAttribute("user", userService.getUserById(id));
-        model.addAttribute("roles", roleService.findAll());
-        return "edit";
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<String> handleException(ConstraintViolationException exception) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(exception.getCause().getMessage());
     }
 
     @PatchMapping("/{id}")
     public String edit(@ModelAttribute User user) {
-        if (!userService.saveUser(user)) {
-            return "userExistsError";
+        if (user.getPassword().isEmpty()) {
+            user.setPassword(userService.getUserById(user.getId()).getPassword());
+            userService.updateUser(user);
+        } else {
+            userService.saveUser(user);
         }
         return "redirect:/admin";
     }

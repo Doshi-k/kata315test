@@ -5,6 +5,7 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,8 +13,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -21,12 +23,16 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String username;
     private String password;
-    private String email;
+    private int age;
+    private String firstName;
+    private String lastName;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @Fetch(FetchMode.JOIN)
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public User() {
     }
@@ -82,19 +88,41 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public String getEmail() {
-        return email;
+    public int getAge() {
+        return age;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAge(int age) {
+        this.age = age;
     }
 
-    public Set<Role> getRoles() {
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String rolesToString() {
+        return Arrays
+                .toString(this.roles.toArray())
+                .replaceAll("[\\[\\]]", "");
     }
 }

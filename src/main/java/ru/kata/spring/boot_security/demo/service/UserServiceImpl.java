@@ -33,22 +33,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
-        if (userFromDB != null) {
-            return false;
-        }
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return true;
     }
-//
-//    @Override
-//    @Transactional
-//    public void updateUser(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        userRepository.save(user);
-//    }
+
+    @Override
+    @Transactional
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
 
     @Override
     @Transactional
@@ -65,4 +59,5 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
 }
