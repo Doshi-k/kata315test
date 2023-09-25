@@ -1,4 +1,4 @@
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" lang="en">
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -9,7 +9,7 @@
     <title>Admin panel</title>
 </head>
 
-<body class="bg-light">
+<body>
 <div class="row">
     <div class="col-md-12 bg-dark text-white">
         <nav class="navbar navbar-dark bg-dark py-1">
@@ -25,26 +25,34 @@
     </div>
 </div>
 
-<div class="row">
+<div class="container-fluid px-0 d-flex h-100 flex-column">
+
+<div class="row no-gutters flex-grow-1">
     <div class="col-md-2 pr-0">
         <ul class="nav flex-column nav-pills">
+            <li class="nav-item">
+                <div sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" href="/admin">Admin</a>
+                </div>
+            </li>
             <li class="nav-item">
                 <a class="nav-link active" href="/user">User</a>
             </li>
         </ul>
     </div>
 
-    <div class="card w-75 mt-2">
-        <div class="card-header">
-            <div class="d-flex">
-                <div class="title pt-3 pb-4">
-                    <h3>User information-page</h3>
-                </div>
+
+    <div class="col-md-10 p-3 pt-3 bg-light">
+        <div class="container-fluid">
+            <div class="title pb-2">
+                <h1>User information-page</h1>
             </div>
-            <div class="card-body">
+
+            <div class="card">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="first" role="tabpanel" aria-labelledby="first-tab">
                         <div class="card-header"><h4>About user</h4></div>
+                        <div class="card-body">
                         <table class="table table-striped">
                             <thead>
                             <tr>
@@ -73,6 +81,9 @@
         </div>
     </div>
 </div>
+</div>
+</div>
+
 
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"

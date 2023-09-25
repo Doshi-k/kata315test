@@ -9,7 +9,7 @@
     <title>Admin panel</title>
 </head>
 
-<body class="bg-light">
+<body>
 <div class="row">
     <div class="col-md-12 bg-dark text-white">
         <nav class="navbar navbar-dark bg-dark py-1">
@@ -25,8 +25,11 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-2 pr-0">
+
+<div class="container-fluid px-0 d-flex h-100 flex-column">
+
+<div class="row no-gutters flex-grow-1" >
+    <div class="col-md-2 p-0 ">
         <ul class="nav flex-column nav-pills">
             <li class="nav-item">
                 <a class="nav-link active" href="/admin">Admin</a>
@@ -37,15 +40,11 @@
         </ul>
     </div>
 
-    <div class="card w-75 mt-2">
-        <div class="card-header">
-            <div class="d-flex">
-                <div class="title pt-3 pb-4">
-                    <h3>Admin panel</h3>
+    <div class="col-md-10 p-3 pt-3 bg-light">
+            <div class="container-fluid">
+                <div class="title pb-2">
+                    <h1>Admin panel</h1>
                 </div>
-            </div>
-
-            <!-- START TABS DIV -->
             <div class="tabbable-responsive">
                 <div class="tabbable">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -60,12 +59,13 @@
                     </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="card-body">
+
+        <div class="card">
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="first" role="tabpanel" aria-labelledby="first-tab">
                     <div class="card-header"><h4>All users</h4></div>
+                    <div class="card-body">
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -304,9 +304,11 @@
                         </tr>
                         </tbody>
                     </table>
+                    </div>
+
                 </div>
                 <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
-                    <div class="card-header"><h5>Add new user</h5></div>
+                    <div class="card-header"><h4>Add new user</h4></div>
                     <div class="container-sm w-25">
                         <div class="card-body">
                             <form class="form-horizontal text-center"
@@ -371,7 +373,10 @@
             </div>
         </div>
     </div>
+    </div>
 </div>
+</div>
+
 
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
