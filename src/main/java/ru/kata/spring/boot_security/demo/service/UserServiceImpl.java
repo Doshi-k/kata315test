@@ -16,6 +16,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -26,9 +27,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+
     @Override
     public User getUserById(Long id) {
-        return userRepository.getById(id);
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("No user with ID = " +
+                id + " in database."));
     }
 
     @Override
@@ -41,6 +44,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(User user) {
+        if (!user.getPassword().equals(getUserById(user.getId()).getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userRepository.save(user);
     }
 
